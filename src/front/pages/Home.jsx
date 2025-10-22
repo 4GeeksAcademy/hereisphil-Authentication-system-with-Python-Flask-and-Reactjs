@@ -33,7 +33,7 @@ export const Home = () => {
 	}, [])
 
 	return (
-		<div className="text-center mt-5">
+		<main className="text-center mt-5">
 			<h1 className="display-5">See you, space cowboy.</h1>
 			<p className="lead">
 				<img src={astrocat} className="img-fluid rounded-circle mb-3" alt="Rigo Baby" />
@@ -47,6 +47,6 @@ export const Home = () => {
 					</span>
 				)}
 			</div>
-		</div>
+		</main>
 	);
 }; 
