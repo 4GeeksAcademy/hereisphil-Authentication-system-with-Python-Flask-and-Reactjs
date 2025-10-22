@@ -46,3 +46,30 @@ def handle_login():
         user=user.serialize()
     )
     return jsonify(response_body), 201
+
+
+@api.route("/signup", methods=["POST"])
+def handle_signup():
+    body = request.json
+    email = body.get("email", None)
+    password = body.get("password", None)
+    if email is None:
+        return jsonify(dict(message="Missing email")), 400
+    if password is None:
+        return jsonify(dict(message="Missing password")), 400
+    # Query database for email and password
+    isExistingUser = User.query.filter_by(
+        email=email, password=password).first()
+    if isExistingUser is not None:
+        # The user was found on the database
+        return jsonify(dict(message="User already exists, please login!")), 400
+    # user doesn't exist
+    # create new user
+    newUser = User(email=email, password=password)
+    db.session.add(newUser)
+    db.session.commit()
+    # user has been authenticated
+    # create the token
+    user_token = create_access_token(identity=str(newUser.id))
+    response_body = dict(token=user_token, newUser=newUser.serialize())
+    return jsonify(response_body), 201
