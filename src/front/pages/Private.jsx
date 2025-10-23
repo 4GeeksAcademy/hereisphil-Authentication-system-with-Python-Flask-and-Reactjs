@@ -1,7 +1,40 @@
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export const Private = () => {
+    const navigate = useNavigate();
+
+    const { store, dispatch } = useGlobalReducer();
+    useEffect(() => {
+        if (store.token == undefined) {
+            navigate("/login");
+        }
+    }, [store.token]);
+
+    async function getPrivateContent() {
+        const url = `${store.API_BASE_URL}/api/private-content`;
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${store.token}`
+            }
+        });
+
+        if (response.status == 401) {
+            navigate("/login")
+        }
+
+        const body = await response.json();
+        const content = body.content;
+        dispatch({
+            type: "set_private_content",
+            payload: content
+        })
+        return content;
+    };
+
     useEffect(() => {
         // small confetti effect using DOM (no external libs)
         const colors = ["#ff6b6b", "#ffd93d", "#6bcB77", "#4d96ff", "#b86bff"];
@@ -33,6 +66,19 @@ export const Private = () => {
                         A colorful, lightweight welcome page to celebrate your <strong>private area</strong>.
                         No forms, no nav — just fun vibes and smooth micro-interactions.
                     </p>
+                    <button
+                        type="button"
+                        className="btn btn-danger my-3"
+                        onClick={() => getPrivateContent()}>
+                        Private Content  ⚠️
+                    </button>
+                    {store.private_content != undefined && (
+                        <div className="row">
+                            <h2>Congratulations, you seem to be who you claim to be...</h2>
+                            <p>This is the private content:</p>
+                            <p>{content}</p>
+                        </div>
+                    )}
 
                     <div className="d-flex gap-2 flex-wrap">
                         <button type="button" onClick={() => toast.success("You clicked me!")} className="btn pill d-inline-flex align-items-center justify-content-center bg-primary text-white px-3 py-2 rounded-pill shadow-sm">

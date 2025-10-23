@@ -1,10 +1,12 @@
 import { useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
     const { store, dispatch } = useGlobalReducer();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     async function sendLoginRequest(e) {
         e.preventDefault();
@@ -29,6 +31,7 @@ export const Login = () => {
                     type: "authenticate",
                     payload: token,
                 });
+                navigate("/private");
             } else {
                 alert(`Login was not successful: ${body.message || JSON.stringify(body)}`);
             }

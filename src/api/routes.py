@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import email
 from flask import Flask, request, jsonify, url_for, Blueprint
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
@@ -73,3 +73,13 @@ def handle_signup():
     user_token = create_access_token(identity=str(newUser.id))
     response_body = dict(token=user_token, newUser=newUser.serialize())
     return jsonify(response_body), 201
+
+
+@api.route("private-content", methods=["GET"])
+@jwt_required()
+def deliver_private_content():
+    content = """Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet sequi incidunt deserunt enim porro cumque doloribus fuga sed laborum labore optio, facere harum dolorem impedit expedita iure sit, saepe minima."""
+    response_body = dict(
+        content=content
+    )
+    return jsonify(response_body), 200
