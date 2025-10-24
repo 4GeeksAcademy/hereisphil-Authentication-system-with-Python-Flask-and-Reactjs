@@ -1,11 +1,13 @@
 import { useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export const Signup = () => {
     const { store, dispatch } = useGlobalReducer();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     async function sendSignupRequest(e) {
         e.preventDefault();
@@ -31,6 +33,7 @@ export const Signup = () => {
                     payload: token,
                 });
                 toast.success("Welcome!")
+                navigate("/private")
             } else {
                 toast.error(`Signup was not successful: ${body.message || JSON.stringify(body)}`);
             }

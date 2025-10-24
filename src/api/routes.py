@@ -50,36 +50,26 @@ def handle_login():
 
 @api.route("/signup", methods=["POST"])
 def handle_signup():
-    body = request.json
-    email = body.get("email", None)
-    password = body.get("password", None)
-    if email is None:
-        return jsonify(dict(message="Missing email")), 400
-    if password is None:
-        return jsonify(dict(message="Missing password")), 400
-    # Query database for email and password
-    isExistingUser = User.query.filter_by(email=email).first()
-    if isExistingUser is not None:
-        # The user was found on the database
-        return jsonify(dict(message="User already exists, please login!")), 400
-    # user doesn't exist
-    # create new user
-    newUser = User()
-    newUser.email = email
-    newUser.password = password
+    body = request.json or {}
+    email = body.get("email")
+    password = body.get("password")
+
+    if not email:
+        return jsonify({"message": "Missing email"}), 400
+    if not password:
+        return jsonify({"message": "Missing password"}), 400
+
+    # only check by email for existence
+    if User.query.filter_by(email=email).first():
+        return jsonify({"message": "User already exists, please login!"}), 400
+
+    # create & persist the mapped instance
+    newUser = User(email=email, password=password, is_active=True)
     db.session.add(newUser)
-    db.session.commit()
-    # grab the newly created user
-    user = db.session.scalars(select(User).where(
-        User.email == email)).one_or_none()
-    # user has been created and now will authenticate
-    # create the token
-    user_token = create_access_token(identity=str(user.id))
-    response_body = dict(
-        token=user_token,
-        user=user.serialize()
-    )
-    return jsonify(response_body), 201
+    db.session.commit()              # newUser.id is now available
+
+    token = create_access_token(identity=str(newUser.id))
+    return jsonify({"token": token, "user": newUser.serialize()}), 201
 
 
 @api.route("private-content", methods=["GET"])
