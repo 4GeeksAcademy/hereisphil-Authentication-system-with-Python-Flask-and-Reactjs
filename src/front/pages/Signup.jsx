@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import toast from "react-hot-toast";
 
 export const Signup = () => {
     const { store, dispatch } = useGlobalReducer();
@@ -29,11 +30,12 @@ export const Signup = () => {
                     type: "authenticate",
                     payload: token,
                 });
+                toast.success("Welcome!")
             } else {
-                alert(`Signup was not successful: ${body.message || JSON.stringify(body)}`);
+                toast.error(`Signup was not successful: ${body.message || JSON.stringify(body)}`);
             }
         } catch (error) {
-            alert(`Network error: ${error.message}`);
+            toast.error(`Network error: ${error.message}`);
         }
     }
 

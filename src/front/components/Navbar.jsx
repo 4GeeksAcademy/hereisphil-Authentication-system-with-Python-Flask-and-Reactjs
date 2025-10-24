@@ -51,7 +51,7 @@ export const Navbar = () => {
 					<Link to="/login" className="btn btn-primary">
 						Login
 					</Link>
-					<button type="submit" onClick={(e) => sendLogoutRequest(e)}>Logout</button>
+					<button type="submit" className="btn btn-hunter" onClick={(e) => sendLogoutRequest(e)}>Logout</button>
 				</div>
 			</div>
 		</nav>

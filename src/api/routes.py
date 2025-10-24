@@ -58,20 +58,27 @@ def handle_signup():
     if password is None:
         return jsonify(dict(message="Missing password")), 400
     # Query database for email and password
-    isExistingUser = User.query.filter_by(
-        email=email, password=password).first()
+    isExistingUser = User.query.filter_by(email=email).first()
     if isExistingUser is not None:
         # The user was found on the database
         return jsonify(dict(message="User already exists, please login!")), 400
     # user doesn't exist
     # create new user
-    newUser = User(email=email, password=password)
+    newUser = User()
+    newUser.email = email
+    newUser.password = password
     db.session.add(newUser)
     db.session.commit()
-    # user has been authenticated
+    # grab the newly created user
+    user = db.session.scalars(select(User).where(
+        User.email == email)).one_or_none()
+    # user has been created and now will authenticate
     # create the token
-    user_token = create_access_token(identity=str(newUser.id))
-    response_body = dict(token=user_token, newUser=newUser.serialize())
+    user_token = create_access_token(identity=str(user.id))
+    response_body = dict(
+        token=user_token,
+        user=user.serialize()
+    )
     return jsonify(response_body), 201
 
 
