@@ -76,7 +76,7 @@ export const Private = () => {
                         <div className="row">
                             <h2>Congratulations, you seem to be who you claim to be...</h2>
                             <p>This is the private content:</p>
-                            <p>{content}</p>
+                            <img src={store.private_content} />
                         </div>
                     )}
 

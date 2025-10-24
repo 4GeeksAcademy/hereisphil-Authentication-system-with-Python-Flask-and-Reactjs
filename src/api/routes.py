@@ -78,7 +78,7 @@ def handle_signup():
 @api.route("private-content", methods=["GET"])
 @jwt_required()
 def deliver_private_content():
-    content = """Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet sequi incidunt deserunt enim porro cumque doloribus fuga sed laborum labore optio, facere harum dolorem impedit expedita iure sit, saepe minima."""
+    content = """https://avatars.githubusercontent.com/u/28765343?v=4"""
     response_body = dict(
         content=content
     )
