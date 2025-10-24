@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export const Login = () => {
     const { store, dispatch } = useGlobalReducer();
@@ -31,12 +32,13 @@ export const Login = () => {
                     type: "authenticate",
                     payload: token,
                 });
+                toast.success("Welcome back!")
                 navigate("/private");
             } else {
-                alert(`Login was not successful: ${body.message || JSON.stringify(body)}`);
+                toast.error(`Login was not successful: ${body.message || JSON.stringify(body)}`);
             }
         } catch (error) {
-            alert(`Network error: ${error.message}`);
+            toast.error(`Network error: ${error.message}`);
         }
     }
 

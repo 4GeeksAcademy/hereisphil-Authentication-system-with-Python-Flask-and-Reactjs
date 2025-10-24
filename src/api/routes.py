@@ -83,3 +83,9 @@ def deliver_private_content():
         content=content
     )
     return jsonify(response_body), 200
+
+
+@api.route("/logout", methods=["POST"])
+def handle_logout():
+    body = request.json
+    return jsonify(body), 201

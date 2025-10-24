@@ -32,7 +32,6 @@ export const Private = () => {
             type: "set_private_content",
             payload: content
         })
-        return content;
     };
 
     useEffect(() => {

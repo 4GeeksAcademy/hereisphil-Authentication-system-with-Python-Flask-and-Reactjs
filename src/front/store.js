@@ -16,6 +16,12 @@ export default function storeReducer(store, action = {}) {
         ...store,
         token: action.payload,
       };
+    case "logout":
+      localStorage.clear(); //remove all site storage
+      return {
+        ...store,
+        token: undefined,
+      };
     case "set_private_content":
       return {
         ...store,
